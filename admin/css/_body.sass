@@ -1,0 +1,202 @@
+*
+  margin: 0px
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box 
+  box-sizing: border-box
+  
+.tc-main-conteiner
+ width: 100%
+ background-color: lightblue
+ position: relative
+
+.cl-dp-center 
+ justify-content: center
+ align-items: center
+ display: flex
+
+.tc-all-content
+ width: 500px
+ min-height: 500px
+ background-color: #fff
+ margin: 5px 0px 5px 0px
+ position: relative
+
+.tc-all-content-production
+ width: 65%
+ left: 17.5%
+ min-height: 500px
+ background-color: #fff
+ margin: 5px 0px 5px 0px
+ position: relative
+
+.cl-dv-otr-cnt
+ width: 100%
+ padding: calc( 0px * var(--scale-select))
+ position: relative
+ overflow: hidden
+
+.cl-dv-otr-cnt-resp
+ width: 100%
+ padding: calc( 5px * var(--scale-select))
+ position: relative
+ overflow: hidden
+
+.cl-img-bg
+ position: relative
+ width: 100%
+ height: 100%
+
+.cl-no-dc
+ text-decoration: none
+
+.cl-a-href-cl
+ color: #000
+
+.cl-active-new-desc
+ text-decoration: none
+ display: inline-block
+ font-size: 14px
+ width: 50px
+ border: 2px solid#0955f7 
+ border-radius: 1000px
+ white-space: nowrap
+ text-align: center
+ position: relative
+ padding: 3px 0px 3px 0px
+ cursor: pointer
+ margin: 2px
+  
+.cl-btn-active
+ color:#fff
+ background-color: #0955f7 
+
+.cl-btn-inactive
+ color:#0955f7
+ background-color: #fff
+
+.cl-btn-inactive:hover
+ color:#fff
+ background-color: #0955f7 
+ 
+
+ /*Encabezados*/
+.cl-title-cluster
+ font-size: calc( 17px * var(--scale-select))
+
+/*texto*/
+.cl-txt-cluster
+ font-size: calc( 16px * var(--scale-select))
+
+  //Escalando contenido
+
+//Estilos estaticos
+///////////////////////////////////////////Importante al quitar el responsive de la página agregar esta clase// 
+/*  Index.php   /*Buscar _clusterResponsive.sass*/
+ /* <div class="cl-size-dk-resp-3 *(cl-nr) cl-bg-ld cl-aling">  ------> Agregarlo aquí
+  <div class="cl-img-dk-resp-3 *(cl-hg-resp) cl-bg-img">-------> quitar  cl-hg-resp
+  */
+.cl-nr
+ margin: calc( 20px * var(--scale-select))
+///////////////////////////////////////////Fin ////////////////////////////////////////////////////////////////
+
+.cl-aling
+ float: left
+ font-size: calc( 16px * var(--scale-select))
+ position: relative
+ padding-top: calc( 5px * var(--scale-select))
+
+.cl-bg-img
+ background-color: $primary-bg-color
+
+.cl-dc-content
+ padding: calc( 10px * var(--scale-select))
+ color: $primary-color
+ position: relative
+ width: 100%
+
+/*Loading*/
+.cl-bg-ld
+  background-color: $primary-bg-loading
+
+.cl-ld-wd-a 
+ width: calc( 50px * var(--scale-select))
+
+.cl-ld-wd-b
+ width: calc( 80px * var(--scale-select))
+
+.cl-ld-wd-c
+ width: calc( 50px * var(--scale-select))
+
+.cl-ld-wd-d
+ width: calc( 90px * var(--scale-select))
+
+.cl-ld-otr
+ height: calc( 10px * var(--scale-select))
+ margin-bottom: calc( 10px * var(--scale-select))
+ background-color:#d4d6d7
+
+//150
+.cl-size-150 
+ width: var(--size-escale-cc)
+
+.cl-img-150
+ height: var(--size-escale-cc)
+ width: 100%
+
+ //300
+.cl-size-300 
+ width: var(--size-escale-tc)
+
+.cl-img-300
+ height: var(--size-escale-tc)
+ width: 100%
+
+ //350 x 200
+.cl-size-350
+ width: var(--size-escale-tn)
+
+.cl-img-200
+ height: var(--size-escale-dcs)
+ width: 100%
+
+ //480
+.cl-size-480 
+ width: var(--size-escale-co)
+
+.cl-img-480
+ height: var(--size-escale-co)
+ width: 100%
+
+ //750 x 490
+.cl-size-750 
+ width: var(--size-escale-sc)
+
+.cl-img-490
+ height: var(--size-escale-cn)
+ width: 100%
+
+  //320 x 240
+.cl-size-320
+ width: var(--size-escale-tv)
+
+.cl-img-240
+ height: var(--size-escale-dc)
+ width: 100%
+
+ //1024
+.cl-size-1024 
+ width: var(--size-escale-mv)
+
+.cl-img-1024
+ height: var(--size-escale-mv)
+ width: 100%
+
+ //1536
+.cl-size-1536 
+ width: var(--size-escale-mq)
+
+.cl-img-1536
+ height: var(--size-escale-mq)
+ width: 100%
+
+@import responsive/_clusterResponsive

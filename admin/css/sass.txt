@@ -1,0 +1,8 @@
+/*Utilizar las líneas de comandos CMD no es necesario el uso de comandos de RUBY*/
+/*Navegar hasta la ruta del SASS*/
+Nota:
+    EL ARCHIVO PRINCIPAL ES EL MAIN.SASS TODOS LOS DEMÁS ARCHIVOS SON PARTE DEL MISMO
+
+sass --watch main.sass:main.css
+sass --watch clStyle.scss:clStyle.css
+@import _variables
