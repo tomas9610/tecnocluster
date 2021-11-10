@@ -4,9 +4,11 @@ let newCal = 0
 let max = 0
 let option = null
 let allElement = document.getElementsByClassName("cl-aling")
+let getUrl = window.location.href.split("&")
+let getNewData = false
 
 //Función de activación de busqueda
-const searchActive = () => {
+const searchActive = async () => {
     let description = showDescription.value
     let title = showTitle.value
     let getId = allId.value
@@ -23,7 +25,15 @@ const searchActive = () => {
         }
         startNewCluster.appendChild(son0)
     }
-    newVisualization(getId,title,description)
+    if(getUrl[1] != undefined){
+        let idCluster = getUrl[1].split("edit=")
+            if(idCluster[1] != undefined){
+                getNewData = true
+                searchData(idCluster[1],getId,title,description,getNewData)
+            }
+        }else{
+            newVisualization(getId,title,description)
+        }
 }
 
 //Buscando los tamaños
@@ -61,6 +71,42 @@ const maxSize = (option) => {
       );
 }
 
+// Tipo de visualización
+const typeVisual = (quantity,select,type) => {
+    if(select == 0){ select = 1}
+    let maxScreen = 100,  defaultSize = 500, size = 1.333, newCount = 1
+    const typeSee = { 1:100, 2:48, 3:32, 4:24, 5:19, 6:15.6 }
+    for(let i = 0; i < quantity; i++){
+        if(select == newCount){ newCal = ((defaultSize * typeSee[newCount]) / maxScreen) / size; newStyle = "height:"+newCal + "px"}
+        newCount++
+    }
+    sizeWaitW = "cl-size-"+type+"-resp-" + select
+    sizeWaitH = "cl-img-"+type+"-resp-" +select+ " cl-hg-resp"
+    const data = {
+        'sizeWaitW': sizeWaitW,
+        'sizeWaitH': sizeWaitH
+    }
+    return data 
+}
+
+///Tamaños del cluster del plugin
+const sizeCluster = () => {
+    let data = null
+    let sizesVisual = null, quantity = null, positionQuantity = null,typeOfDesig = typeDesig.value,typeOfDesigW = typeDesigW.value,typeOfDesigH = typeDesigH.value
+    if(typeOfDesig != "responsive"){
+        sizeWaitW = "cl-size-" + typeOfDesigW + " cl-nr"
+        sizeWaitH = "cl-img-" + typeOfDesigH
+        newStyle = "height:calc( "+typeOfDesigH+"px * var(--scale-select))"
+         data = {'sizeWaitW': sizeWaitW,'sizeWaitH': sizeWaitH}
+    }else{
+        if(typeVisualization.value == "dk"){quantity = 6; positionQuantity = positionQuantity1.textContent}
+        if(typeVisualization.value == "tb"){quantity = 4; positionQuantity = positionQuantity3.textContent}
+        if(typeVisualization.value == "mv"){ quantity = 2; positionQuantity = positionQuantity2.textContent}
+        sizesVisual = typeVisual(quantity,positionQuantity,typeVisualization.value)
+        data = {'sizeWaitW': sizesVisual.sizeWaitW,'sizeWaitH': sizesVisual.sizeWaitH}
+    }
+    return data
+}
 //Obteniene los tamaños dados por el usuario
 const getMeasure = (var2) => {
     var vars = var2.split(",");
@@ -68,102 +114,39 @@ const getMeasure = (var2) => {
      typeDesigH.value = vars[1]
      sendMeasure()
 }
-let thatData = []
-//SStar new Cluster
-const startCluster = () => {
-    let thisData = []
-    const son = document.createElement("div")
-    son.setAttribute("id", "waitId")
-    startNewCluster.appendChild(son)
-        let typeOfDesig = typeDesig.value
-        let typeOfDesigW = typeDesigW.value
-        let typeOfDesigH = typeDesigH.value
-        if(typeOfDesig != "responsive"){
-            sizeWaitW = "cl-size-" + typeOfDesigW + " cl-nr"
-            sizeWaitH = "cl-img-" + typeOfDesigH
-            newStyle = "height:calc( "+typeOfDesigH+"px * var(--scale-select))"
-        }else{
-                if(typeVisualization.value == "DK"){
-                    if(positionQuantity1.textContent == 0){
-                        positionQuantity1.textContent = 1
-                    }
-                    //relaciones
-                        if(positionQuantity1.textContent == 6){
-                             newCal = ((500 * 15.6) / 100) / 1.333
-                            newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity1.textContent == 5){
-                            newCal = ((500 * 19) / 100) / 1.333
-                           newStyle = "height:"+newCal + "px"
-                       }
-                       if(positionQuantity1.textContent == 4){
-                        newCal = ((500 * 24) / 100) / 1.333
-                       newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity1.textContent == 3){
-                            newCal = ((500 * 32) / 100) / 1.333
-                           newStyle = "height:"+newCal + "px"
-                            }
-                        if(positionQuantity1.textContent == 2){
-                        newCal = ((500 * 48) / 100) / 1.333
-                        newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity1.textContent == 1){
-                            newCal = ((500 * 100) / 100) / 1.333
-                            newStyle = "height:"+newCal + "px"
-                            }
-                    //fin
-                    sizeWaitW = "cl-size-dk-resp-" + positionQuantity1.textContent
-                    sizeWaitH = "cl-img-dk-resp-" +positionQuantity1.textContent+ " cl-hg-resp"
-                }
-                if(typeVisualization.value == "TB"){
-                    if(positionQuantity3.textContent == 0){
-                        positionQuantity3.textContent = 1
-                    }
-                    if(positionQuantity3.textContent == 4){
-                        newCal = ((500 * 24) / 100) / 1.333
-                       newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity3.textContent == 3){
-                            newCal = ((500 * 32) / 100) / 1.333
-                           newStyle = "height:"+newCal + "px"
-                            }
-                        if(positionQuantity3.textContent == 2){
-                        newCal = ((500 * 48) / 100) / 1.333
-                        newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity3.textContent == 1){
-                            newCal = ((500 * 100) / 100) / 1.333
-                            newStyle = "height:"+newCal + "px"
-                            }
-                    sizeWaitW = "cl-size-tb-resp-" + positionQuantity3.textContent
-                    sizeWaitH = "cl-img-tb-resp-" +positionQuantity3.textContent+ " cl-hg-resp"
-                }
-                if(typeVisualization.value == "MB"){
-                    if(positionQuantity2.textContent == 0){
-                        positionQuantity2.textContent = 1
-                    }
-                    if(positionQuantity2.textContent == 2){
-                        newCal = ((500 * 48) / 100) / 1.333
-                        newStyle = "height:"+newCal + "px"
-                        }
-                        if(positionQuantity2.textContent == 1){
-                            newCal = ((500 * 100) / 100) / 1.333
-                            newStyle = "height:"+newCal + "px"
-                            }
-                    sizeWaitW = "cl-size-mv-resp-" + positionQuantity2.textContent
-                    sizeWaitH = "cl-img-mv-resp-" +positionQuantity2.textContent+ " cl-hg-resp"
-                }
+
+//Borrando Items
+const deleteElement = (data,id) =>{
+    for(let i = 0; i < data.length;i++){
+        let deleteElem = document.getElementById(data[i]+id)
+        if (deleteElem != null){
+            deleteElem.parentNode.removeChild(deleteElem)
         }
-        //Obteniendo cantidad de número de datos a llamar 
-        if(allId.value != ""){
+    }
+}
+//Buscando espejos de datos
+const searchMirror = (thisData,thatData) => {
+    thisData.sort(minToMax)
+    thatData.sort(minToMax)
+        for (var i=0; i < thatData.length ; i++) {
+            let exist = thisData.includes(thatData[i])
+             if(exist == false){
+                const dataArray = ["titleMirror","descriptionMirror","idSMirror","urlMirror","imgMirror","alterMirror"]
+                deleteElement(dataArray,thatData[i])
+             }
+
+        }
+}
+
+//Listo para eliminar los que ya no se ocupen
+let thatData = []
+const deleteItems = () => {
+    let thisData = []
+            if(allId.value != ""){
             let varQuanti = allId.value
             let numTotal = varQuanti.split(",");
              allGet = numTotal
-         }else{
-             allGet = [ 0.1 ,0.2 , 0.3]
          }
-         let countDato = 0
             allGet.map( dato => {   
                 let foundId = false
                 for(var i = 0; i<thisData.length; i++){
@@ -176,8 +159,7 @@ const startCluster = () => {
                         thisData.push(dato)
                     }
                 }
-
-                if(countDato == 0){
+                ///Thatdata
                     let foundIdB = false
                     for(var i = 0; i < sessionStorage.length; i++){
                         let idForEdit = sessionStorage.key(i)
@@ -190,8 +172,27 @@ const startCluster = () => {
                             thatData.push(idForEdit)
                            }
                     }
-                }
-
+            })
+            searchMirror(thisData,thatData)
+}
+//SStar new Cluster
+const startCluster = () => {
+    const son = document.createElement("div")
+    son.setAttribute("id", "waitId")
+    son.setAttribute("class", "cl-dv-otr-cnt-resp")
+    startNewCluster.appendChild(son)
+    let getSizeCluster = sizeCluster()
+    let sizeWaitH = getSizeCluster.sizeWaitH
+    let sizeWaitW = getSizeCluster.sizeWaitW
+        //Obteniendo cantidad de número de datos a llamar 
+        if(allId.value != ""){
+            let varQuanti = allId.value
+            let numTotal = varQuanti.split(",");
+             allGet = numTotal
+         }else{
+             allGet = [ 0.1 ,0.2 , 0.3]
+         }
+            allGet.map( dato => {   
                 const son = document.createElement("div")
                 son.setAttribute("class", sizeWaitW+" cl-aling")
                 son.innerHTML= ` 
@@ -206,20 +207,7 @@ const startCluster = () => {
                 `
            
                 waitId.appendChild(son)
-                countDato += 1
             })
-            thisData.sort(deMenorAMayor)
-            thatData.sort(deMenorAMayor)
-                for (var i=0; i < thatData.length ; i++) {
-                    if(thisData[i] != undefined){
-                        let exist = thatData[i].includes(thisData[i])
-                        if(exist == false){
-                            sessionStorage.removeItem(thatData[i])
-                        }
-                    }else{
-                        sessionStorage.removeItem(thatData[i])
-                    }
-                }
 }
 //creando el contenedor de los cluster
 const createContent = () => {
@@ -249,230 +237,210 @@ const paintTheDescrip = async (data) => {
     return waitAnswer
 }
 
-//pintando
+//Pintando botones edición o nuevo
+const contentAreaBtn = (dato) => {
+    const newChild = document.createElement("div")
+    newChild.setAttribute("class", "cl-active-new-desc cl-btn-inactive")
+    newChild.setAttribute("data-edit",dato.idS)
+    newChild.setAttribute("onclick","clickEdit(this)")
+
+    newChild.innerHTML = `
+        <span id="btn${dato.idS}">${dato.idS}</span>
+    `
+
+    if(allIdGet.appendChild(newChild)){
+        /// Code Here
+    }
+}
+
+//pintando botones
 const activePaintDesc = (data) => {
     const newContein = document.createElement("div")
     newContein.setAttribute("id","allIdGet")
     newContein.setAttribute("style","width: 200px;position:relative;top:5px;")
-
-    editPerId.appendChild(newContein)
-    data.map(dato => {
-        const newChild = document.createElement("div")
-        newChild.setAttribute("class", "cl-active-new-desc cl-btn-inactive")
-        newChild.setAttribute("data-edit",dato.idS)
-
-        newChild.innerHTML = `
-            <span id="btn${dato.idS}">${dato.idS}</span>
-        `
-
-        allIdGet.appendChild(newChild)
-    })
-    return true
+    if(editPerId.appendChild(newContein)){
+        data.map(dato => {
+            contentAreaBtn(dato)
+        })
+        return true
+    }
 }
 
-function deMenorAMayor(elem1, elem2) {return elem1-elem2;}
-                                    
-function deMayorAMenor(elem1, elem2) {return elem2-elem1;}
-
-let thisDataA = []
-let thatDataA = []
-///Pinta los datos por pantalla
-const paintData = (data) => {
-    let getGetId = allId.value
-    let notNull = getGetId.split(",")
-
-    let typeOfDesig = typeDesig.value
-    let typeOfDesigW = typeDesigW.value
-    let typeOfDesigH = typeDesigH.value
-    if(typeOfDesig != "responsive"){
-        sizeWaitW = "cl-size-" + typeOfDesigW + " cl-nr"
-        sizeWaitH = "cl-img-" + typeOfDesigH
-        newStyle = "height:calc( "+typeOfDesigH+"px * var(--scale-select))"
-    }else{
-        if(typeVisualization.value == "DK"){
-            if(positionQuantity1.textContent == 0){
-                positionQuantity1.textContent = 1
+//Pintando los espejos de los datos
+const createMirror = (datoIds,type,cluster,content) => {
+    let createInput = null
+    let searchElement = null
+    for(let i = 0; i < type.length; i++){
+        searchElement = document.getElementById(type[i]+datoIds)
+        if ( searchElement === null ) {
+            if(type[i] != "descriptionMirror"){
+               createInput = document.createElement("input")
+               createInput.setAttribute("type","hidden")
+            }else{
+               createInput = document.createElement("textarea")
+               createInput.setAttribute("style","display:none")
             }
-                                //relaciones
-                                if(positionQuantity1.textContent == 6){
-                                    newCal = ((500 * 15.6) / 100) / 1.333
-                                    newStyle = "height:"+newCal + "px"
-                               }
-                               if(positionQuantity1.textContent == 5){
-                                   newCal = ((500 * 19) / 100) / 1.333
-                                  newStyle = "height:"+newCal + "px"
-                              }
-                              if(positionQuantity1.textContent == 4){
-                               newCal = ((500 * 24) / 100) / 1.333
-                              newStyle = "height:"+newCal + "px"
-                               }
-                               if(positionQuantity1.textContent == 3){
-                                   newCal = ((500 * 32) / 100) / 1.333
-                                  newStyle = "height:"+newCal + "px"
-                                   }
-                               if(positionQuantity1.textContent == 2){
-                               newCal = ((500 * 48) / 100) / 1.333
-                               newStyle = "height:"+newCal + "px"
-                               }
-                               if(positionQuantity1.textContent == 1){
-                                   newCal = ((500 * 100) / 100) / 1.333
-                                   newStyle = "height:"+newCal + "px"
-                                   }
-                           //fin
-            sizeWaitW = "cl-size-dk-resp-" + positionQuantity1.textContent
-            sizeWaitH = "cl-img-dk-resp-" +positionQuantity1.textContent+ " cl-hg-resp"
-        }
-        if(typeVisualization.value == "TB"){
-            if(positionQuantity3.textContent == 0){
-                positionQuantity3.textContent = 1
+            createInput.setAttribute("id",type[i]+ datoIds)
+            createInput.setAttribute("name",cluster[i]+"[]")
+            if(allInputDinamic.appendChild(createInput)){
+                let insertTitle = document.getElementById(type[i]+ datoIds)
+                insertTitle.value = content[i]
             }
-            if(positionQuantity3.textContent == 4){
-                newCal = ((500 * 24) / 100) / 1.333
-               newStyle = "height:"+newCal + "px"
-                }
-                if(positionQuantity3.textContent == 3){
-                    newCal = ((500 * 32) / 100) / 1.333
-                   newStyle = "height:"+newCal + "px"
-                    }
-                if(positionQuantity3.textContent == 2){
-                newCal = ((500 * 48) / 100) / 1.333
-                newStyle = "height:"+newCal + "px"
-                }
-                if(positionQuantity3.textContent == 1){
-                    newCal = ((500 * 100) / 100) / 1.333
-                    newStyle = "height:"+newCal + "px"
-                    }
-            sizeWaitW = "cl-size-tb-resp-" + positionQuantity3.textContent
-            sizeWaitH = "cl-img-tb-resp-" +positionQuantity3.textContent+ " cl-hg-resp"
-        }
-        if(typeVisualization.value == "MB"){
-            if(positionQuantity2.textContent == 0){
-                positionQuantity2.textContent = 1
-            }
-            if(positionQuantity2.textContent == 2){
-                newCal = ((500 * 48) / 100) / 1.333
-                newStyle = "height:"+newCal + "px"
-                }
-                if(positionQuantity2.textContent == 1){
-                    newCal = ((500 * 100) / 100) / 1.333
-                    newStyle = "height:"+newCal + "px"
-                    }
-            sizeWaitW = "cl-size-mv-resp-" + positionQuantity2.textContent
-            sizeWaitH = "cl-img-mv-resp-" +positionQuantity2.textContent+ " cl-hg-resp"
         }
     }
-    let changeClassCountBtn = 0
-    data.map( dato => {   
-        let foundId = false
-        for(var i = 0; i<thisDataA.length; i++){
-            if(thisDataA[i] == dato.idS){
-                foundId = true
+}
+
+///Creando Elementos Espejos
+const createElements = (datoIds,datoAlter,datoUrlImage,datoImage,datoTitle,datoDescription) => {
+    const type = [ "idSMirror","imgMirror","urlMirror","alterMirror","titleMirror","descriptionMirror"]
+    const cluster = [ "setIds","setImg","setUrl","setAlter","titleClusters","descriptionClusters"]
+    const content = [datoIds, datoImage,datoUrlImage, datoAlter, datoTitle, datoDescription]
+    createMirror(datoIds,type,cluster,content)
+}
+
+//Obteniendo el total del String a guardar
+const getTotalString = (getNewString,stringTitle) => {
+    let getDescription = ""
+    if(getUrl[1] == undefined){
+        if(typeof getNewString.children[1] !== 'undefined'){
+            getDescription = getNewString.children[1].innerText
+       }else{
+           getDescription = ""
+       }
+    }else{
+        if(typeof getNewString !== 'undefined'){
+            getDescription = getNewString.innerText
+       }else{
+           getDescription = ""
+       }
+    }
+    if(stringTitle == 0){
+        stringTitle = ""
+    } 
+    let totalString = {
+        "title" : stringTitle,
+        "description" : getDescription
+    }
+
+    return totalString
+}
+//De mayor a menor
+function minToMax(elem1, elem2) {return elem1-elem2;}
+
+//Creando Dom
+const createDom = (dato,getNewString,sizeWaitH,sizeWaitW) => {
+    const hijo = document.createElement("div")
+    hijo.setAttribute("class", sizeWaitW + " cl-aling")
+            hijo.innerHTML= `
+                <div class="${sizeWaitH} cl-bg-img" style="${newStyle}">
+                    <a href="${dato.urlImage}">
+                        <img class="cl-img-bg" src="${dato.image}" alt="${dato.alter}">
+                    </a>
+                </div>
+                <div class="cl-dc-content">
+                   ${dato.title != 0 ? `
+                   <h3 class="cl-title-cluster" id="title${dato.idS}"><a href="${dato.urlImage}" class="cl-no-dc cl-a-href-cl"></a></h3>
+                   ` :``}
+                    <div>
+                        ${getNewString.innerText != 0 ? `
+                        <p class="cl-txt-cluster" id="description${dato.idS}">
+                        
+                        </p>
+                        `:`` }
+                    </div>
+                </div>
+            `
+            return hijo
+}
+///Pinta los datos por pantalla
+const paintData = (data,existCl) => {
+    //Dividiendo datos DB Cluster y DB Post
+        let getSizeCluster = sizeCluster()
+        let sizeWaitH = getSizeCluster.sizeWaitH
+        let sizeWaitW = getSizeCluster.sizeWaitW
+        let countBtnEdit = 0
+        data.map( dato => {   
+            let total = "save"
+            sessionStorage.setItem(dato.idS, total)
+            let stringDesc = dato.description
+            let description = showDescription.value
+            let title = showTitle.value
+            if(description == 1){
+                if(dato.description == 0){
+                    stringDesc = "Agregar descripción" 
+                }
             }
-        }
-        if(foundId != true){
-            thisDataA.push(dato.idS)
-        }
-        let stringDesc = dato.description
-        const child0 = document.createElement("div")
-        child0.setAttribute("id", "descrip"+ dato.idS)
-        child0.setAttribute("style", "display:none")
-        child0.innerHTML = stringDesc
-
-        if(clAllContent.appendChild(child0)){
-            let getNewString = document.getElementById("descrip"+dato.idS)
-            let stringTitle = dato.title
-            let stringId = dato.idS
-            const hijo = document.createElement("div")
-            hijo.setAttribute("class", sizeWaitW + " cl-aling")
-                    hijo.innerHTML= `
-                        <div class="${sizeWaitH} cl-bg-img" style="${newStyle}">
-                            <a href="https://tuitycode.com">
-                                <img class="cl-img-bg" src="${dato.image}" alt="Página de idea">
-                            </a>
-                        </div>
-                        <div class="cl-dc-content">
-                           ${dato.title != 0 ? `
-                           <h3 class="cl-title-cluster" id="title${dato.idS}"><a class="cl-no-dc cl-a-href-cl"></a></h3>
-                           ` :``}
-                            <div>
-                                ${getNewString.innerText != 0 ? `
-                                <p class="cl-txt-cluster" id="description${dato.idS}">
-                                
-                                </p>
-                                `:`` }
-                            </div>
-                        </div>
-                    `
-                    if(clAllContent.appendChild(hijo)){
-                        let getDescription = ""
-                        if(typeof getNewString.children[1] !== 'undefined'){
-                             getDescription = getNewString.children[1].innerText
-                        }else{
-                            getDescription = ""
-                        }
-                        if(stringTitle == 0){
-                            stringTitle = ""
-                        } 
-                        let totalString = stringTitle +","+ getDescription
-                        ///Guardar atraves de sessionStorage la descripcion y el titulo
-
-
-                        //////////////////Solucionar error del null 
-                            let searchItem = sessionStorage.key(0)
-                            if(searchItem == null || changeClassCountBtn == 0 || notNull == 1){
-                                sessionStorage.setItem(stringId, totalString)
-                            }else{
-                                thisDataA.sort(deMenorAMayor)
-                                
-                                let compareItem = thisDataA[changeClassCountBtn]
-                                let compareItemB = sessionStorage.key(changeClassCountBtn)
-                                if(compareItemB != null){
-                                    let foundIdB = false
-                                    for(var i = 0; i<thatDataA.length; i++){
-                                        if(thatDataA[i] == compareItemB){
-                                            foundIdB = true
+            if(title == 1){
+                if(dato.title == 0){
+                    dato.title = "Agregar Título" 
+                }
+            }
+            
+            const child0 = document.createElement("div")
+            child0.setAttribute("id", "descrip"+ dato.idS)
+            child0.setAttribute("style", "display:none")
+            child0.innerHTML = stringDesc
+    
+            if(clAllContent.appendChild(child0)){
+                let getNewString = document.getElementById("descrip"+dato.idS)
+                if(getNewString.innerText === ""){
+                    getNewString.innerText = "Agregar descripción" 
+                }
+                let stringTitle = dato.title
+                let child = createDom(dato,getNewString,sizeWaitH,sizeWaitW)
+                        if(clAllContent.appendChild(child)){
+                            // Creando inputs espejos 
+                            //Obteniendo el total del String
+                                let totalString = getTotalString(getNewString,stringTitle)
+                                createElements(dato.idS,dato.alter,dato.urlImage,dato.image,totalString.title,totalString.description)
+                                let titleStorage = document.getElementById("title"+dato.idS)
+                                let descriptionStorage = document.getElementById("description"+dato.idS)
+                                let insertTitle = document.getElementById("titleMirror"+ dato.idS).value
+                                let insertDescription = document.getElementById("descriptionMirror"+ dato.idS).value
+                                if(titleStorage != null){
+                                    if(insertTitle == 0){
+                                        titleStorage.style.display = "none"
+                                    }else{
+                                        titleStorage.style.display = "block"
+                                    }
+                                  titleStorage.childNodes[0].innerText = insertTitle
+                                }
+                                if(descriptionStorage != null){
+                                    if(insertDescription == 0){
+                                        descriptionStorage.style.display = "none"
+                                    }else{
+                                        descriptionStorage.style.display = "block"
+                                    }
+                                  descriptionStorage.innerText = insertDescription   
+                                }
+                                //Pintando primer boton
+                                //Buscar error tratar de cambiar esto al buscar nuevos cluster en post 
+                                if(countBtnEdit == 0){
+                                    let activeButton = null
+                                    if(getUrl[1] != undefined){
+                                        if(existCl == false){
+                                            activeButton = document.getElementById("btn"+dato.idS).offsetParent
+                                        }else{
+                                            activeButton = document.getElementById("btn"+dato.idS).parentElement
                                         }
+                                    }else{
+                                         activeButton = document.getElementById("btn"+dato.idS).offsetParent
                                     }
-                                    if(foundIdB != true){
-                                        thatDataA.push(compareItemB)
+                                    activeButton.classList.remove("cl-btn-inactive")
+                                    activeButton.classList.add("cl-btn-active")
+                                    if(insertDescription == 0){
+                                        insertDescription = ""
                                     }
+                                    newDescriptionEdit.value = insertDescription
+                                    newTitleEdit.value = insertTitle
+                                    editDataStorage.setAttribute("data-storage",dato.idS)
                                 }
-                                thatDataA.sort(deMenorAMayor)
-                                let compareItemC = thatDataA[changeClassCountBtn]
-                                let existItem = compareItem.includes(compareItemC)
-                               if(existItem == false){
-                                     sessionStorage.setItem(stringId, totalString)
-                               }
-                            }
-
-                        for(var x = 0; x < sessionStorage.length; x++){
-                            let idStorage = sessionStorage.key(x)
-                            let contentStorage = sessionStorage.getItem(idStorage)
-                            let separeContent = contentStorage.split(",")
-                            let titleStorage = document.getElementById("title"+dato.idS)
-                            let descriptionStorage = document.getElementById("description"+dato.idS)
-                            if(idStorage == dato.idS){
-                                if ( titleStorage !== null ) {
-                                    titleStorage.innerText = separeContent[0]
-                                }
-                                if ( descriptionStorage !== null ) {
-                                    descriptionStorage.innerText = separeContent[1]
-                                }
-                            }
-                            if(x == 0 && changeClassCountBtn == 0){
-                                let activeButton = document.getElementById("btn"+idStorage).offsetParent
-                                activeButton.classList.remove("cl-btn-inactive")
-                                activeButton.classList.add("cl-btn-active")
-                                newDescriptionEdit.value = separeContent[1]
-                                newTitleEdit.value = separeContent[0]
-                            }
                         }
-                    }
-        }
-        changeClassCountBtn += 1
-    })
-    option = "add"
-    maxSize(option)
+            }
+            countBtnEdit++
+        })
+        option = "add"
+        maxSize(option)
 }
 
 ///Recibiendo los tamaños 
@@ -543,7 +511,7 @@ const newVisualization = async (id,title,description) => {
             if (typeof clAllContent !== 'undefined'){
                 let continuePaint = await paintTheDescrip(data)
                 if(continuePaint == true){
-                    paintData(data)
+                    paintData(data,false)
                 }
             }
         break
@@ -551,46 +519,238 @@ const newVisualization = async (id,title,description) => {
             console.log('Upps hubo algún error')
         break
     }
+    deleteItems()
 }
 //Funciones de visualización ES NECESARIO OPTIMIZAR
-const showDK = () => {
-    activeDK.classList.remove("btn-outline-primary")
-    activeDK.classList.add("btn-primary")
-    activeTB.classList.remove("btn-primary")
-    activeTB.classList.add("btn-outline-primary")
-    activeMB.classList.remove("btn-primary")
-    activeMB.classList.add("btn-outline-primary")
-    typeVisualization.value = "DK"
-    document.documentElement.style.setProperty('--scale-select', "0.26041");
+const typeDevice = (type,scale, devices) => {
+    const device = [activeDK,activeTB,activeMV]
+    document.documentElement.style.setProperty('--scale-select', scale);
+    typeVisualization.value = devices
+    for(let i = 0;i < device.length; i++){
+        if(type == device[i]){
+            device[i].classList.remove("btn-outline-primary")
+            device[i].classList.add("btn-primary")
+        }else{
+            device[i].classList.remove("btn-primary")
+            device[i].classList.add("btn-outline-primary")
+        }
+    }
 }
-const showTB = () => {
-    activeTB.classList.remove("btn-outline-primary")
-    activeTB.classList.add("btn-primary")
-    activeDK.classList.remove("btn-primary")
-    activeDK.classList.add("btn-outline-primary")
-    activeMB.classList.remove("btn-primary")
-    activeMB.classList.add("btn-outline-primary")
-    typeVisualization.value = "TB"
-    document.documentElement.style.setProperty('--scale-select', "0.78125");
+const saveStorage = (that) =>{
+    let setStorageId = that.getAttribute("data-storage")
+    let titleMirrorEdit = document.getElementById("titleMirror"+setStorageId)
+    let descriptionMirrorEdit = document.getElementById("descriptionMirror"+setStorageId)
+    titleMirrorEdit.value = newTitleEdit.value
+    descriptionMirrorEdit.value = newDescriptionEdit.value
+    searchFunction()
 }
-const showMB = () => {
-    activeMB.classList.remove("btn-outline-primary")
-    activeMB.classList.add("btn-primary")
-    activeDK.classList.remove("btn-primary")
-    activeDK.classList.add("btn-outline-primary")
-    activeTB.classList.remove("btn-primary")
-    activeTB.classList.add("btn-outline-primary")
-    typeVisualization.value = "MB"
-    document.documentElement.style.setProperty('--scale-select', "1.38888");
+//Editando titulo y descripción
+const clickEdit = (that) => {
+    let editData = that
+    let idForEdit = editData.getAttribute("data-edit")
+    let changeColorBtn = document.getElementsByClassName("cl-active-new-desc")
+    for(let i = 0; i <  changeColorBtn.length; i++){
+        changeColorBtn[i].classList.remove("cl-btn-active")
+        changeColorBtn[i].classList.add("cl-btn-inactive")
+        let getDataId = changeColorBtn[i].getAttribute("data-edit") 
+        if(getDataId == idForEdit){
+            changeColorBtn[i].classList.remove("cl-btn-inactive")
+            changeColorBtn[i].classList.add("cl-btn-active")
+            let existTitleMirror = document.getElementById("titleMirror"+ getDataId).value 
+            let existDescriptionMirror = document.getElementById("descriptionMirror"+ getDataId).value 
+            newTitleEdit.value = existTitleMirror
+            if(existDescriptionMirror == 0){
+                existDescriptionMirror = ""
+            }
+            newDescriptionEdit.value = existDescriptionMirror
+            editDataStorage.setAttribute("data-storage",idForEdit)  
+        }
+    }
 }
 
 //Función que cambia el Título por el nombre dado por el usuario
-const changeTitle = () => {
+//funcion de busqueda 
+const searchFunction = () => {
+    if (typeof waitId !== 'undefined'){
+        if(waitId.parentNode.removeChild(waitId)){
+            startCluster()
+        }
+    }else{
+        startCluster()
+    }
+    if(allId.value != ""){
+        searchActive()
+    }else{
+        waitId.style.display="block"
+    }
+}
+
+
+const changeTitle = e => {
     nameCluster.textContent = nombreCluster.value
 }
 
+//Cantidad de tamaño en Personalizado
+const quantitySize = (newSize) => {
+    for(var i = 0; i < measure.length; i++){
+        let getSizes = measure.children[i].value
+        if(newSize == getSizes){
+            measure.children[i].setAttribute("selected","")
+        }else{
+            measure.children[i].removeAttribute("selected")
+        }
+    }
+}
+//Parte de edición en el área de responsive
+const responsiveEdit = () => {
+    thPersonali.style.display = "none"
+    trPersonali.style.display = "none"
+    thResponsive.style.display = "block"
+    trResponsive1.style.display = "block"
+}
+///Parte de edición en el área de personality
+const personalityEdit = (newSize) => {
+    thResponsive.style.display = "none"
+    trResponsive1.style.display = "none"
+    thPersonali.style.display = "block"
+    trPersonali.style.display = "block"
+    quantitySize(newSize)
+}
+//Obtener medidas responsivas
+const getSizeResponsive = (data) => {
+    let theSize = data.split(",")
+    return theSize
+}
+///ChangeDataStyle
+const changeDataStyle = async (data,printData) => {
+        nombreCluster.value = data.name
+        allId.value = data.allId
+        typeDesig.value = data.type
+        //Check protocolo
+        if(data.protocol == "http"){
+            clusterProtocolo.value = data.protocol+"://"
+            httpsActive.removeAttribute("checked")
+            httpActive.setAttribute("checked", "")
+        }else{
+            clusterProtocolo.value = data.protocol+"://"
+            httpActive.removeAttribute("checked")
+            httpsActive.setAttribute("checked", "")
+        }
+        //Tipo de enlace
+        if(data.open == "_self"){
+            typeOpenPage.value = data.open
+            openSelf.setAttribute("checked","")
+            openBlank.removeAttribute("checked")
+        }else{
+            typeOpenPage.value = data.open
+            openBlank.setAttribute("checked","")
+            openSelf.removeAttribute("checked")
+        }
+        //Mostrando tilulo o descripción
+        if(data.showTitle == 0){
+            showTitle.value = "0"
+            showTitle.removeAttribute("checked")
+        }
+        if(data.showDescription == 0){
+            showDescription.value = "0"
+            showDescription.removeAttribute("checked")
+        }
+        if(data.type == "responsive"){
+            openResponsive.setAttribute("checked","checked")
+            openPersonali.removeAttribute("checked")
+            let sizeResponsive = getSizeResponsive(data.clSize)
+            rangeDesktop.valueAsNumber = sizeResponsive[0]
+            positionQuantity1.textContent = sizeResponsive[0]
+            rangeTablet.valueAsNumber = sizeResponsive[1]
+            positionQuantity3.textContent = sizeResponsive[1]
+            rangeMobile.valueAsNumber = sizeResponsive[2]
+            positionQuantity2.textContent = sizeResponsive[2]
+            responsiveEdit()
+        }else{
+            let newSize = data.clSize + ","+ data.clImg
+            typeDesigW.value = data.clSize
+            typeDesigH.value = data.clImg
+            openResponsive.removeAttribute("checked")
+            openPersonali.setAttribute("checked","checked")
+            personalityEdit(newSize)
+        }
+        if (typeof clAllContent !== 'undefined'){
+            let continuePaint = await paintTheDescrip(printData)
+            if(continuePaint == true){
+                if(allId.value == ""){
+                    allChangeThis.style.display = "none"
+                }else{
+                    allChangeThis.style.display = "table-row"
+                }
+                paintData(printData,true)
+            }
+        }  
+}
+//Edición del cluster Search Data
+const searchData = async (idCluster,ids,title,description,getNewData) => {
+    const dataForm = new FormData
+    dataForm.append('action','peticionEditar')
+    dataForm.append('idCluster', idCluster) 
+    dataForm.append('title',title)
+    dataForm.append('idS',ids)
+    dataForm.append('description',description)
+    dataForm.append('nonce',solicitudesAjaxVisual.seguridad)
+    dataForm.append('getNewData', getNewData)
+
+    const newEdit = new Headers
+    const allDataEdit = {
+        method : 'POST',
+        headers : newEdit,
+        body : dataForm
+    }
+    let dataEdit = {}
+    waitId.style.display="block"
+    clusterWait()
+    const responseEdit = await fetch(solicitudesAjaxVisual.url, allDataEdit)
+    switch(responseEdit.status){
+        case 200:
+            waitId.style.display="none"
+            dataEdit = await responseEdit.json()
+            if(getNewData == false){
+                changeDataStyle(dataEdit[0].style[0],dataEdit[0].allData)
+            }else{
+                if (typeof clAllContent !== 'undefined'){
+                    let continuePaint = await paintTheDescrip(dataEdit[0].allData)
+                    if(continuePaint == true){
+                        paintData(dataEdit[0].allData,false)
+                    }
+                }  
+            }
+        break
+
+        default:
+            console.log("Upps existe un error")
+        break
+    }
+    deleteItems()
+}
+//Edición del cluster
+if(getUrl[1] != undefined){
+    let idCluster = getUrl[1].split("edit=")
+    if(idCluster[1] != undefined){
+     startCluster()
+     let description = showDescription.value
+     let title = showTitle.value
+     let ids = allId.value
+     getNewData = false
+     searchData(idCluster[1],ids,title,description,getNewData)
+    }
+}
+
+///Activación de eventos
 nombreCluster.addEventListener("keyup", e => {
     changeTitle()
+})
+
+nombreCluster.addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+    }
 })
 
 // //Buscando en  la base de datos
@@ -602,6 +762,24 @@ allId.addEventListener("keyup", e => {
         allChangeThis.style.display = "table-row"
     }
 })
+allId.addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+    }
+})
+
+//Editando titulo o description
+newTitleEdit.addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+    }
+})
+newDescriptionEdit.addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+    }
+})
+//Mostrando titulo o descripcion
 showTitle.addEventListener("change", e => {
     if(showTitle.value == 0){
         newTitleEdit.style.display = "block"
@@ -629,7 +807,6 @@ showTitle.addEventListener("change", e => {
     }
   })
 
-
 ////////// buscar en la base de datos
 showDescription.addEventListener("change", e => {
     if(showDescription.value == 0){
@@ -643,47 +820,29 @@ showDescription.addEventListener("change", e => {
         searchActive()
     }
 })
+
+//Borrando la espera
+const deleteWait = () => {
+    if (typeof waitId !== 'undefined'){
+        if(waitId.parentNode.removeChild(waitId)){ startCluster()}
+    }else{ startCluster()}
+    if(allId.value != ""){searchActive() }
+}
+
 rangeDesktop.addEventListener("mouseup", e => {
     positionQuantity1.textContent = rangeDesktop.valueAsNumber
-    if (typeof waitId !== 'undefined'){
-        if(waitId.parentNode.removeChild(waitId)){
-            startCluster()
-        }
-    }else{
-        startCluster()
-    }
-    showDK()
-    if(allId.value != ""){
-        searchActive()
-    }
+    typeDevice(activeDK,"0.26041","dk")
+    deleteWait()
 })
 rangeTablet.addEventListener("mouseup", e => {
     positionQuantity3.textContent = rangeTablet.valueAsNumber
-    if (typeof waitId !== 'undefined'){
-        if(waitId.parentNode.removeChild(waitId)){
-            startCluster()
-        }
-    }else{
-        startCluster()
-    }
-    showTB()
-    if(allId.value != ""){
-        searchActive()
-    }
+    typeDevice(activeTB,"0.78125","tb")
+    deleteWait()
 })
 rangeMobile.addEventListener("mouseup", e => {
     positionQuantity2.textContent = rangeMobile.valueAsNumber
-    if (typeof waitId !== 'undefined'){
-        if(waitId.parentNode.removeChild(waitId)){
-            startCluster()
-        }
-    }else{
-        startCluster()
-    }
-    showMB()
-    if(allId.value != ""){
-        searchActive()
-    }
+    typeDevice(activeMV,"1.38888","mv")
+    deleteWait()
 })
 measure.addEventListener("change", e => {
     getMeasure(measure.value) 
@@ -703,64 +862,40 @@ openSelf.addEventListener("change", e => {
 openBlank.addEventListener("change", e => {
     typeOpenPage.value ="_blank"
 })
+//Tipo de protocolo
+httpsActive.addEventListener("change", e => {
+    clusterProtocolo.value ="https://"
+})
+httpActive.addEventListener("change", e => {
+    clusterProtocolo.value ="http://"
+})
 //Diseño responsivo
 openResponsive.addEventListener("change", e => {
     typeDesig.value ="responsive"
-    thPersonali.style.display = "none"
-    trPersonali.style.display = "none"
-    thResponsive.style.display = "block"
-    trResponsive1.style.display = "block"
+    responsiveEdit()
     sendMeasure()
 })
 openPersonali.addEventListener("change", e => {
     typeDesig.value ="personality"
     getMeasure(measure.value) 
-    thResponsive.style.display = "none"
-    trResponsive1.style.display = "none"
-    thPersonali.style.display = "block"
-    trPersonali.style.display = "block"
+    personalityEdit(measure.value)
 })
 
 //Tipos de visualizaciones
 activeDK.addEventListener("click", e => {
-        if (typeof waitId !== 'undefined'){
-            if(waitId.parentNode.removeChild(waitId)){
-                startCluster()
-            }
-        }else{
-            startCluster()
-        }
-    showDK()
-    if(allId.value != ""){
-        searchActive()
-    }
+    typeDevice(activeDK,"0.26041","dk")
+    deleteWait()
 })
 activeTB.addEventListener("click", e => {
-        if (typeof waitId !== 'undefined'){
-            if(waitId.parentNode.removeChild(waitId)){
-                startCluster()
-            }
-        }else{
-            startCluster()
-        }
-    showTB()
-    if(allId.value != ""){
-        searchActive()
-    }
+    typeDevice(activeTB,"0.78125","tb")
+    deleteWait()
 })
-activeMB.addEventListener("click", e => {
-        if (typeof waitId !== 'undefined'){
-            if(waitId.parentNode.removeChild(waitId)){
-                startCluster()
-            }
-        }else{
-            startCluster()
-        }
-    showMB()
-    if(allId.value != ""){
-        searchActive()
-    }
+activeMV.addEventListener("click", e => {
+    typeDevice(activeMV,"1.38888","mv")
+    deleteWait()
 })
 
 //Función autoejecutable
+if(getUrl[1] == undefined){
 startCluster()
+}

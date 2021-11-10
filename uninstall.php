@@ -1,5 +1,7 @@
 <?php 
 
+defined('ABSPATH') or die("Bye bye");
+
 if(!defined('WP_UNINSTALL_PLUGIN')){
     die();
 }
@@ -12,8 +14,7 @@ delete_site_option($option_name);
  
 // drop a custom database table
 global $wpdb;
-$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}encuestas");
-$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}encuestas_detalle");
-$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}encuestas_respuestas");
+$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tecnoCluster");
+$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tecnoClusterItems");
 
 ?>

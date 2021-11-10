@@ -1,52 +1,56 @@
 <?php 
-/*
-Plugin Name: tecnocluster
-Plugin URI: https://tuitycode.com
-Description: Plugin de ejemplo del post de como crear un plugin en WordPress
-Version: 1.0
-Author: Tomás Alvarado
-Author URI: https://tuitycode.com
-License: GPL2
-*/
+
+/**
+ * Plugin Name:       tecnocluster
+ * Plugin URI:        https://example.com/plugins/the-basics/
+ * Description:       Este es un super plugin para crear diseños de imágenes tipo cluster, la última moda aconsejada en el mundo del SEO esto con el fin de acomodar tus articulos de una manera muy linda, entonces que opinas ahora.
+ * Version:           1.0.0
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Author:            Tomás Alvarado Matamoros
+ * Author URI:        https://tuitycode.com
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       tecnocluster
+ */
  	
 defined('ABSPATH') or die("Bye bye");
 
-///
-// define( 'PT_TC_PATH', plugin_dir_path( __FILE__ ) );
-// include_once(  PT_TC_PATH . 'includes/index.php' );
 
 //require 
-require_once dirname(__FILE__).'/admin/includes/codigoCorto.class.php';
+require_once dirname(__FILE__).'/admin/includes/TC_shortcode.class.php';
 require_once dirname(__FILE__).'/admin/includes/visual.php';
+require_once dirname(__FILE__).'/admin/includes/edit.php';
 
 function activeTecno(){
     global $wpdb;
 
-$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}encuestas(
-    `encuestaId` INT NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(60) NULL,
+$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tecnoCluster(
+    `tecnoClusId` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(60) NULL,
     `idShortCode` VARCHAR(60) NULL,
     `shortCode` VARCHAR(60) NULL,
-    PRIMARY KEY (`encuestaId`));"; 
+    `clSize` VARCHAR(100) NULL,
+    `clImg` VARCHAR(100) NULL,
+    `type` VARCHAR(30) NULL,
+    `header` VARCHAR(30) NULL,
+    `open` VARCHAR(30) NULL,
+    `allId` VARCHAR(30) NULL,
+    PRIMARY KEY (`tecnoClusId`));"; 
 $wpdb->query($sql);
 
-$sql2 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}encuestas_detalle(
-    `detalleId` INT NOT NULL AUTO_INCREMENT,
+$sql2 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tecnoClusterItems(
+    `itemsId` INT NOT NULL AUTO_INCREMENT,
     `idShortCode` VARCHAR(60) NULL,
-    `pregunta` VARCHAR(60) NULL,
-    `tipo` VARCHAR(60) NULL,
-    PRIMARY KEY (`detalleId`));
+    `urlImage` VARCHAR(200) NULL,
+    `postUrl` VARCHAR(200) NULL,
+    `title` VARCHAR(100) NULL,
+    `alter` VARCHAR(100) NULL,
+    `description` VARCHAR(200) NULL,
+    `idPost` int(11) NULL,
+    PRIMARY KEY (`itemsId`));
   ";
   $wpdb->query($sql2);
-
-  $sql3 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}encuestas_respuestas(
-    `respuestaId` INT NOT NULL AUTO_INCREMENT,
-    `detalleId` INT NULL,
-    `codigo` VARCHAR(60) NULL,
-    `respuesta` VARCHAR(60) NULL,
-    PRIMARY KEY (`respuestaId`));
-  ";
-    $wpdb->query($sql3);
 }
 function inactiveTecno(){
     flush_rewrite_rules();
@@ -74,48 +78,50 @@ add_submenu_page(
     'Agregar nuevo',//Titulo de página
     'Agregar nuevo',//Titulo de menu
     'manage_options',
-    'newTC',
-    'newTC'
+    'tcam_newTC',
+    'tcam_newTC'
 );
 }
 
 //Edit Cluster
-function newTC(){
+function tcam_newTC(){
     require_once dirname(__FILE__).'/admin/newTC.php';
 }
 
-function encolarBootstrap($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_newTC"){
+function tcam_mixBootstrap($hook){
+    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_newTC"){
         return;
     }
     wp_enqueue_script('boots',plugins_url('admin/bootstrap/js/bootstrap.min.js',__FILE__),array('jquery'),null,true);
 }
-add_action('admin_enqueue_scripts','encolarBootstrap');
+add_action('admin_enqueue_scripts','tcam_mixBootstrap');
 
-function EncolarBootstrapCSS($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_newTC"){
+function tcam_mixBootstrapCSS($hook){
+    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_newTC"){
         return ;
     }
     wp_enqueue_style('bootstrapCSS',plugins_url('admin/bootstrap/css/bootstrap.min.css',__FILE__));
     wp_enqueue_style('tecnoMain',plugins_url('admin/css/main.css',__FILE__));
     wp_enqueue_style('tecnoStyle',plugins_url('admin/css/clStyle.css',__FILE__));
 }
-add_action('admin_enqueue_scripts','EncolarBootstrapCSS');
+add_action('admin_enqueue_scripts','tcam_mixBootstrapCSS');
 
 ///Js propio
-function newScript($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_newTC"){
+function tcam_newScript($hook){
+    if($hook != "tecnocluster/admin/list_view.php"){
         return;
     }
-    wp_enqueue_script('listaEncuestaJs',plugins_url('admin/js/lista_encuesta.js',__FILE__),array('jquery'));
-    wp_localize_script('listaEncuestaJs', 'solicitudesAjax',[
+    wp_enqueue_script('listClustersJs',plugins_url('admin/js/list_clusters.js',__FILE__),array('jquery'));
+    wp_localize_script('listClustersJs', 'solicitudesAjax',[
         'url' => admin_url('admin-ajax.php'), 'seguridad' => wp_create_nonce('seg')
     ]);
 }
-add_action('admin_enqueue_scripts','newScript');
+add_action('admin_enqueue_scripts','tcam_newScript');
 
-function newVisual($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_newTC"){
+////Función que evita que el script se muestre en la lista de cluster
+
+function tcam_onlyNewClusterAndEdit($hook){
+    if($hook != "tecnocluster_page_tcam_newTC"){
         return;
     }
     wp_enqueue_script('scriptVisual',plugins_url('admin/js/cl-visual.js',__FILE__),array(),null,true);
@@ -123,76 +129,62 @@ function newVisual($hook){
         'url' => admin_url('admin-ajax.php'), 'seguridad' => wp_create_nonce('segVisual')
     ]);
 }
-add_action('admin_enqueue_scripts','newVisual');
+add_action('admin_enqueue_scripts','tcam_onlyNewClusterAndEdit');
 
-//Carga los archivos en la página
-function my_load_scripts($hook) {
+//Carga los archivos en la página visual del cliente
+function tcam_my_load_scripts($hook) {
  
     // create my own version codes
-    $my_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'public/js/test.js' ));
-    $my_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'public/css/test.css' ));
+    $my_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'public/js/script.js' ));
+    $my_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'public/css/main.css' ));
      
     // 
-    wp_enqueue_script( 'custom_js', plugins_url( 'public/js/test.js', __FILE__ ), array(), $my_js_ver );
-    wp_register_style( 'my_css',    plugins_url( 'public/css/test.css',    __FILE__ ), false,   $my_css_ver );
+    wp_enqueue_script( 'custom_js', plugins_url( 'public/js/script.js', __FILE__ ), array(), $my_js_ver,true );
+    wp_register_style( 'my_css',    plugins_url( 'public/css/main.css',    __FILE__ ), false,   $my_css_ver );
     wp_enqueue_style ( 'my_css' );
  
 }
-add_action('wp_enqueue_scripts', 'my_load_scripts');
+add_action('wp_enqueue_scripts', 'tcam_my_load_scripts');
 
 //ajax
 
-function EliminarEncuesta(){
+function tcam_deleteCluster(){
     $nonce = $_POST['nonce'];
     if(!wp_verify_nonce($nonce, 'seg')){
         die('no tiene permisos para ejecutar ese ajax');
     }
 
-    $id = $_POST['id'];
-    global $wpdb;
-    $tabla = "{$wpdb->prefix}encuestas";
-    $tabla2 = "{$wpdb->prefix}encuestas_detalle";
-    $tabla3 = "{$wpdb->prefix}encuestas_respuestas";
-    $wpdb->delete($tabla,array('idShortCode' =>$id));
-    $wpdb->delete($tabla2,array('idShortCode' =>$id));
-    $wpdb->delete($tabla3,array('codigo' =>$id));
-     return true;
+    if(isset($_POST['id'])){
+        $id = $_POST['id'];
+        global $wpdb;
+        $tabla = "{$wpdb->prefix}tecnoCluster";
+        $tabla2 = "{$wpdb->prefix}tecnoClusterItems";
+        $wpdb->delete($tabla,array('idShortCode' =>$id));
+        $wpdb->delete($tabla2,array('idShortCode' =>$id));
+         return true;
+    }else{
+        return false;
+    }
+
 }
 
-//peticioneliminar tiene que coincider con el alias del lista_encuesta.js
-add_action('wp_ajax_peticioneliminar','EliminarEncuesta');
+//deleteCluster tiene que coincider con el alias del lista_encuesta.js
+//Si no cambia cambiar deleteCluster
+add_action('wp_ajax_TC_deleteCluster','tcam_deleteCluster');
 
 ///Shortcode
 
 //shortcode
 
-function imprimirshortcode($atts){
-    $_short = new codigocorto;
-    //obtener el id por parametro
+function tcam_printShortCode($atts){
+    $_short = new TC_shortcode;
+   // obtener el id por parametro
     $id= $atts['id'];
-    //Programar las acciones del boton
-    if(isset($_POST['btnGuardar'])){
-        $listadePreguntas = $_short->ObtenerEncuestaDetalle($id);
-        $codigo = $id;
-        foreach ($listadePreguntas as $key => $value) {
-           $idpregunta = $value['detalleId'];
-           if(isset($_POST[$idpregunta])){
-               $valortxt = $_POST[$idpregunta];
-               $datos = [
-                   'detalleId' => $idpregunta,
-                   'codigo' => $codigo,
-                   'respuesta' => $valortxt
-               ];
-               $_short->GuardarDetalle($datos);
-           }
-        }
-        return " Encuesta enviada exitosamente";
-    }
-    //Imprimir el formulario
-    $html = $_short->Armador($id);
+   // Imprimir el formulario
+    $html = $_short->TC_assemble($id);
     return $html;
 }
 
 
-add_shortcode("SC_CT","imprimirshortcode");
+add_shortcode("cc_ct","tcam_printShortCode");
 ?>

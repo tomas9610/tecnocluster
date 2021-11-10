@@ -1,0 +1,41 @@
+/*Fondos*/
+$primary-bg-color: #000
+$primary-bg-loading: #575757
+$primary-bg-clare: #fff
+$primary-bg-description: #0b9ea3
+
+/*Color*/
+$primary-color: inherit
+$primary-color-lg: #fff
+
+/*Tamaños*/
+$size-escale: 1
+//Mobil
+// $size-escale: 1.38888
+//Tablet
+// $size-escale: 0.78125
+//Desktop
+// $size-escale: 0.26041
+
+//Variables root
+:root
+  --scale-select: #{$size-escale}
+    
+  // Tamaños
+  --size-escale-cc: calc( 150px * var(--scale-select))
+  --size-escale-tc: calc( 300px * var(--scale-select))
+  //320 X 240
+  --size-escale-tv: calc( 320px * var(--scale-select))
+  --size-escale-dc: calc( 240px * var(--scale-select))
+  //fin de 320 X 240
+  //350 X 200
+  --size-escale-tn: calc( 350px * var(--scale-select))
+  --size-escale-dcs: calc( 200px * var(--scale-select))
+  //fin de 320 X 240
+  --size-escale-co: calc( 480px * var(--scale-select))
+  //750 X 490
+  --size-escale-sc: calc( 750px * var(--scale-select))
+  --size-escale-cn: calc( 490px * var(--scale-select))
+  //fin de 750 X 490
+  --size-escale-mv: calc( 1024px * var(--scale-select))
+  --size-escale-mq: calc( 1536px * var(--scale-select))

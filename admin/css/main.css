@@ -78,7 +78,7 @@
 }
 
 .cl-a-href-cl {
-  color: #000;
+  color: inherit;
 }
 
 .cl-active-new-desc {
@@ -109,9 +109,21 @@
 .cl-btn-inactive:hover {
   color: #fff;
   background-color: #0955f7;
-  /*Encabezados*/
 }
 
+.cl-btn-edit-data {
+  background: #3498db;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.cl-btn-edit-data:hover {
+  background-color: #63b4eb;
+}
+
+/*Encabezados*/
 .cl-title-cluster {
   font-size: calc( 17px * var(--scale-select));
 }
