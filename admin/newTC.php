@@ -37,7 +37,7 @@
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2" >
     <div class="col">
         <form method="post" >
-        <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('seg') ?>">
+        <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('seg2') ?>">
         <input type="hidden" id="typeCluster" value="page">
         <input class="form-check-input" type="radio" name="exampleRadios" id="clusterPage" value="option1" checked>
             Páginas
@@ -206,5 +206,5 @@
   </div>
 </div>
 <?php else : ?>
-    <a href="<?=admin_url( 'admin.php?page=newTC', __FILE__ )?>" class="page-title-action">Añadir nueva</a>
+    <a href="<?php echo admin_url( 'admin.php?page=tcam_tcam_newTC', __FILE__ )?>" class="page-title-action">Añadir nueva</a>
  <?php endif; ?>

@@ -2,100 +2,120 @@
 
 let allElement = document.getElementsByClassName("cl-aling")
 let widthElement = document.getElementsByClassName("cl-hg-resp")
-let mayor = 0
-let widthResonsive = 0
+let clResponsive = document.getElementsByClassName("cl-dv-otr-cnt-resp")
+let answerMayor = null
 
-//Buscando los tamaños
-const sizeResult = (value,option) =>{
-    for(var i = 0; i < allElement.length; i++){
-        if(option == "add"){
-          allElement[i].style.height = value + "px"
-        }else if(option == "remove"){
-          allElement[i].removeAttribute("style")
-        }
-    }
-    mayor = 0
-}
-const sizeResultHeight = (value) =>{
-  for(var i = 0; i < widthElement.length; i++){
-    widthElement[i].style.height = value + "px"
-  }
-  widthResonsive = 0
-  maxSize()
-}
-const sizeError = (error) =>{
-    return error
-}
 
-//Promesa de tamaños
-const maxSize = () => {
-    let getSize = new Promise(function(resolve, reject) {
-      option = "remove"
-      let notValue = null
-      sizeResult(notValue,option)
-        for(var i = 0; i < allElement.length; i++){
-            if(mayor < allElement[i].scrollHeight){
-                mayor = allElement[i].scrollHeight
-            }
-        }
-        if (mayor > 0) {
-          option = "add"
-          resolve(mayor,option);
-        } else {
-          reject("Ocurrio un error");
-        }
-      });
-      
-      getSize.then(
-        function(value) {sizeResult(value,option);
-        },
-        function(error) { sizeError(error);}
-      );
-}
+///Cambiando los tamaños adecuados
+const imgChangeSize = (el) => {
 
-const maxSizeHight = () => {
-  if(widthElement.length != 0){
-    let getSize = new Promise(function(resolve, reject) {
-      for(var i = 0; i < widthElement.length; i++){
-        widthResonsive = widthElement[i].scrollWidth
-      }
+  if(!el[0].classList.contains("cl-hg-resp")){
+
+    for (const i of el) {
+
+      let widthResonsive = parseInt(window.getComputedStyle(i.children[0]).width, 10)
       let newHei = widthResonsive / 1.333
-        resolve(newHei);
-        reject("Ocurrio un error");
-    });
-    
-    getSize.then(
-      function(value) {sizeResultHeight(value);
-      },
-      function(error) { sizeError(error);}
-    );
+      i.children[0].style.height = newHei + "px"
+      
+    }
+
   }
+
+  return true
+
 }
 
-//Función autoejecutable
-const executeFunction = () => {
-  if(widthElement.length != 0){
-    maxSizeHight()
-  }else{
-    maxSize()
+///Cambiando los tamaños adecuados
+const setNewHeight = (newHeight,el) => {
+
+  for (const i of el) {
+
+    if(newHeight > parseInt(window.getComputedStyle(i).height, 10)){
+
+        i.style.height = newHeight + "px"
+      
+    }
+    
   }
+
 }
+
+///Buscando los tamaños adecuados
+const containtsChangeSize = (el) => {
+  let mayor = 0
+
+  for (const i of el) {
+
+      if(mayor < parseInt(window.getComputedStyle(i).height, 10)){
+        mayor = parseInt(window.getComputedStyle(i).height, 10)
+      }
+    
+  }
+
+  return mayor
+
+}
+
+///Seteando el tamaño de las imágenes responsive
+const imgSetAll = async () => {
+
+  let count = 0
+
+  for (const element of clResponsive) {
+
+
+    imgChangeSize(element.children)
+
+    count++
+
+    if(count == clResponsive.length){
+
+      return true
+
+    }
+
+  }
+
+}
+
+const containerSetSize = () => {
+
+  for (const element of clResponsive) {
+
+    answerMayor = containtsChangeSize(element.children)
+    setNewHeight(answerMayor,element.children)
+
+  }
+
+}
+
+
+////Buscando todos los contenedores de tecnocluster
+const searchTencocluster = async () => {
+
+  if(clResponsive.length == 0){ return }
+
+  let answer = await imgSetAll()
+
+  if(answer == true){
+    containerSetSize()
+  }
+
+
+}
+
 
 //Resize
-  window.addEventListener("resize", e => {
-    if(widthElement.length != 0){
-      maxSizeHight()
-    }else{
-      maxSize()
-    }
-  })
-  window.addEventListener("orientationchange", e => {
-    if(widthElement.length != 0){
-      maxSizeHight()
-    }else{
-      maxSize()
-    }
-  })
+window.addEventListener("resize", e => {
+  
+  searchTencocluster()
 
-//Ejecutar
- executeFunction()
+})
+window.addEventListener("orientationchange", e => {
+
+  searchTencocluster()
+
+})
+
+
+searchTencocluster()

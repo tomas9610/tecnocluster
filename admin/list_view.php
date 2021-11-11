@@ -14,7 +14,7 @@
 <?php 
     echo '<h1>'.get_admin_page_title() .'</h1>';
 ?>
-<a href="<?php echo admin_url( 'admin.php?page=newTC', __FILE__ )?>" class="page-title-action">Añadir nueva</a>
+<a href="<?php echo admin_url( 'admin.php?page=tcam_tcam_newTC', __FILE__ )?>" class="page-title-action">Añadir nueva</a>
 <br><br><br>
 
     <table class="wp-list-table widefat fixed striped pages">
@@ -38,7 +38,7 @@
                             <td><?php echo wp_kses($name,$permited,array ())?></td>
                             <td><?php echo wp_kses($sc,$permited,array ())?></td>
                             <td>
-                                <a href="<?php echo admin_url( 'admin.php?page=newTC&edit='.wp_kses($idEc,$permited,array ()), __FILE__ )?>" class="page-title-action">
+                                <a href="<?php echo admin_url( 'admin.php?page=tcam_tcam_newTC&edit='.wp_kses($idEc,$permited,array ()), __FILE__ )?>" class="page-title-action">
                                     Editar
                                 </a>
                                 <a data-id ="<?php echo wp_kses($idEc,$permited,array ())?>" class="page-title-action">

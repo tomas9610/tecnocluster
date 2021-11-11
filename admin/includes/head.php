@@ -10,19 +10,19 @@
     $showTitle = 0;
     $showDescription = 0;
 
-    if(isset($_POST['btnSave']) || isset($_POST["btnUpdate"]) && isset($_POST["nonce"]) && wp_verify_nonce($_POST['nonce'])){
+    if(isset($_POST['btnSave']) || isset($_POST["btnUpdate"]) && isset($_POST["nonce"])){
 
         $isEdit = false;
-         $name = $_POST["nombreCluster"];
+         $name = sanitize_text_field( $_POST['nombreCluster'] );
 
          /*Todos los ids */
-         $allId = $_POST["allId"];
+         $allId = sanitize_text_field( $_POST['allId'] );
          /*Fin */
 
          /*Encabezado y tipo de enlace */
-         $protocol = $_POST["clusterProtocolo"];
+         $protocol = sanitize_text_field( $_POST['clusterProtocolo'] );
          $header = "h3";
-         $open = $_POST["urlOpen"];
+         $open = sanitize_text_field( $_POST['urlOpen'] );
          /* fin */
 
         //Mostrar description titulo si o no   1--- 0
@@ -192,7 +192,7 @@
 
          }
          if(isset($_POST["btnSave"])){
-         $newUrl = 'admin.php?page=newTC&id='. $proximoId;
+         $newUrl = 'admin.php?page=tcam_tcam_newTC&id='. $proximoId;
         ?>
     <script>
           window.history.pushState("", "","<?php echo $newUrl?>")

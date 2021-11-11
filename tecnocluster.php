@@ -61,9 +61,9 @@ register_activation_hook(__FILE__,"activeTecno");
 register_deactivation_hook(__FILE__, "inactiveTecno");
 
 
-add_action('admin_menu', "crearMenu");
+add_action('admin_menu', "tcam_tcam_crearMenu");
 
-function crearMenu(){
+function tcam_tcam_crearMenu(){
 add_menu_page(
     'super clusters',//Titulo de la página
     'Tecnocluster',//Titulo del menu
@@ -78,33 +78,33 @@ add_submenu_page(
     'Agregar nuevo',//Titulo de página
     'Agregar nuevo',//Titulo de menu
     'manage_options',
-    'tcam_newTC',
-    'tcam_newTC'
+    'tcam_tcam_newTC',
+    'tcam_tcam_newTC'
 );
 }
 
 //Edit Cluster
-function tcam_newTC(){
+function tcam_tcam_newTC(){
     require_once dirname(__FILE__).'/admin/newTC.php';
 }
 
-function tcam_mixBootstrap($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_newTC"){
+function tcam_tcam_mixBootstrap($hook){
+    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_tcam_newTC"){
         return;
     }
     wp_enqueue_script('boots',plugins_url('admin/bootstrap/js/bootstrap.min.js',__FILE__),array('jquery'),null,true);
 }
-add_action('admin_enqueue_scripts','tcam_mixBootstrap');
+add_action('admin_enqueue_scripts','tcam_tcam_mixBootstrap');
 
-function tcam_mixBootstrapCSS($hook){
-    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_newTC"){
+function tcam_tcam_mixBootstrapCSS($hook){
+    if($hook != "tecnocluster/admin/list_view.php" && $hook != "tecnocluster_page_tcam_tcam_newTC"){
         return ;
     }
     wp_enqueue_style('bootstrapCSS',plugins_url('admin/bootstrap/css/bootstrap.min.css',__FILE__));
     wp_enqueue_style('tecnoMain',plugins_url('admin/css/main.css',__FILE__));
     wp_enqueue_style('tecnoStyle',plugins_url('admin/css/clStyle.css',__FILE__));
 }
-add_action('admin_enqueue_scripts','tcam_mixBootstrapCSS');
+add_action('admin_enqueue_scripts','tcam_tcam_mixBootstrapCSS');
 
 ///Js propio
 function tcam_newScript($hook){
@@ -121,7 +121,7 @@ add_action('admin_enqueue_scripts','tcam_newScript');
 ////Función que evita que el script se muestre en la lista de cluster
 
 function tcam_onlyNewClusterAndEdit($hook){
-    if($hook != "tecnocluster_page_tcam_newTC"){
+    if($hook != "tecnocluster_page_tcam_tcam_newTC"){
         return;
     }
     wp_enqueue_script('scriptVisual',plugins_url('admin/js/cl-visual.js',__FILE__),array(),null,true);
@@ -155,7 +155,7 @@ function tcam_deleteCluster(){
     }
 
     if(isset($_POST['id'])){
-        $id = $_POST['id'];
+        $id = sanitize_text_field($_POST['id']);
         global $wpdb;
         $tabla = "{$wpdb->prefix}tecnoCluster";
         $tabla2 = "{$wpdb->prefix}tecnoClusterItems";
@@ -177,7 +177,7 @@ add_action('wp_ajax_TC_deleteCluster','tcam_deleteCluster');
 //shortcode
 
 function tcam_printShortCode($atts){
-    $_short = new TC_shortcode;
+    $_short = new tcam_tcam_shortcode;
    // obtener el id por parametro
     $id= $atts['id'];
    // Imprimir el formulario

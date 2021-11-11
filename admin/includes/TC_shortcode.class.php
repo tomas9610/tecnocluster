@@ -2,7 +2,7 @@
 
 defined('ABSPATH') or die("Bye bye");
 
-class TC_shortcode{
+class tcam_tcam_shortcode{
    
     public function TC_getCluster($clusterId){
         global $wpdb;
@@ -30,7 +30,7 @@ class TC_shortcode{
 
     public function formOpen($name){
         $html = "
-        <div id='clAllContent' class='cl-dv-otr-cnt-resp'>
+        <div class='cl-dv-otr-cnt-resp'>
         ";
 
         return $html;

@@ -32,9 +32,9 @@ function TC_getImage($getId){
 function TC_visualAjax(){
     if(isset($_POST['title']) && isset($_POST['description']) && isset($_POST['id']) && isset($_POST['nonce'])){
         $nonce = $_POST['nonce'];
-        $title = $_POST['title'];
-        $description = $_POST['description'];
-        $clusterId = $_POST['id'];
+        $title = sanitize_text_field( $_POST['title'] );
+        $description = sanitize_text_field( $_POST['description'] );
+        $clusterId = sanitize_text_field( $_POST['id'] );
         if(!wp_verify_nonce($nonce, 'segVisual')){
             die('no tiene permisos para ejecutar ese ajax');
         }
