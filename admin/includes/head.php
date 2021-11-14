@@ -27,36 +27,37 @@
 
         //Mostrar description titulo si o no   1--- 0
         if(isset($_POST["showTitle"])){
-            $showTitle = $_POST["showTitle"];
+            $showTitle = sanitize_text_field( $_POST["showTitle"] );
         }
         if(isset($_POST["showDescription"])){
-            $showDescription = $_POST["showDescription"];
+            $showDescription = sanitize_text_field( $_POST["showDescription"] );
         }
         //
 
          /*Arrays de contenido */
-         $setIds = $_POST["setIds"];
+        //  $setIds = sanitize_text_field( $_POST["setIds"] );
+        $setIds = esc_html( $_POST["setIds"] );
 
          $notTitle = 0;
          $notDescription  = 0;
          /*Fin del array */
 
          /*Es responsive o personalizado */
-         $typeDesig = $_POST["typeDesig"];
+         $typeDesig = sanitize_text_field( $_POST["typeDesig"] );
          /*Fin */
 
          /*Rango del diseño responsivo */
-         $rangeMobile = $_POST["rangeMobile"];
-         $rangeDesktop = $_POST["rangeDesktop"];
-         $rangeTablet = $_POST["rangeTablet"];
+         $rangeMobile = sanitize_text_field( $_POST["rangeMobile"] );
+         $rangeDesktop = sanitize_text_field( $_POST["rangeDesktop"] );
+         $rangeTablet = sanitize_text_field( $_POST["rangeTablet"] );
 
          $clSizeResp = "cl-size-dk-resp-".$rangeDesktop." cl-size-tb-resp-".$rangeTablet." cl-size-mv-resp-".$rangeMobile;
          $clImgResp = "cl-img-mv-resp-1 cl-hg-resp"; /* Todos miden lo mismo en imagenes borrar los necesarios en el css mv-dk-tb */
          /*Fin del rango */
 
          /*Rango del diseño personalizado */
-         $typeDesigW = $_POST["typeDesigW"];
-         $typeDesigH = $_POST["typeDesigH"];
+         $typeDesigW = sanitize_text_field( $_POST["typeDesigW"] );
+         $typeDesigH = sanitize_text_field( $_POST["typeDesigH"] );
 
          $clSizePer = "cl-size-".$typeDesigW." cl-nr cl-bg-ld";
          $clImgPer = "cl-img-".$typeDesigH;
@@ -85,7 +86,7 @@
 
          }else{
              if(isset($_GET["edit"])){
-                $proximoId = $_GET["edit"];
+                $proximoId = sanitize_text_field( $_GET["edit"] );
              }
          }
 

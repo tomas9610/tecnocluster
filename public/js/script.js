@@ -6,6 +6,32 @@ let clResponsive = document.getElementsByClassName("cl-dv-otr-cnt-resp")
 let answerMayor = null
 
 
+////Borrando las alturas
+const deleteStyleHeight = async () => {
+
+  let arrayClEntries = Array.from(clResponsive)
+
+
+  for (const [itera,element] of arrayClEntries.entries()) {
+
+
+    for (const i of element.children) {
+
+      i.removeAttribute("style")
+      
+    }
+
+    if(itera == (arrayClEntries.length - 1)){
+
+      return true
+  
+    }
+
+  }
+
+}
+
+
 ///Cambiando los tamaños adecuados
 const imgChangeSize = (el) => {
 
@@ -78,12 +104,18 @@ const imgSetAll = async () => {
 
 }
 
-const containerSetSize = () => {
+const containerSetSize = async () => { 
 
-  for (const element of clResponsive) {
+  let answer = await deleteStyleHeight()
 
-    answerMayor = containtsChangeSize(element.children)
-    setNewHeight(answerMayor,element.children)
+  if(answer == true){
+
+    for (const element of clResponsive) {
+
+      answerMayor = containtsChangeSize(element.children)
+      setNewHeight(answerMayor,element.children)
+  
+    }
 
   }
 
@@ -111,6 +143,7 @@ window.addEventListener("resize", e => {
   searchTencocluster()
 
 })
+
 window.addEventListener("orientationchange", e => {
 
   searchTencocluster()
